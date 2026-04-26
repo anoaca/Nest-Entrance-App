@@ -12,6 +12,7 @@ export default function AdminDashboard() {
   
   // New entry states
   const [newEmail, setNewEmail] = useState('');
+  const [lastCredentials, setLastCredentials] = useState(null);
   const [newQuestionText, setNewQuestionText] = useState('');
   const [newQuestionOptions, setNewQuestionOptions] = useState(['', '', '', '']);
   const [newQuestionAnswer, setNewQuestionAnswer] = useState(0);
@@ -37,10 +38,10 @@ export default function AdminDashboard() {
   const inviteStudent = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/students/invite', { email: newEmail });
+      const res = await api.post('/students/invite', { email: newEmail });
+      setLastCredentials({ email: newEmail, password: res.data.rawPassword });
       setNewEmail('');
       fetchData();
-      alert("Credentials sent!");
     } catch(err) {
       alert("Error inviting student");
     }
@@ -189,15 +190,22 @@ export default function AdminDashboard() {
                    <div className="bg-surface-container-lowest p-6 rounded-xl admin-panel-shadow">
                        <h3 className="text-lg font-semibold font-display mb-4 flex items-center"><KeySquare size={20} className="mr-2 text-primary"/> Dispense Credentials</h3>
                        <form onSubmit={inviteStudent} className="flex gap-4">
-                           <input 
-                             type="email" 
-                             required 
-                             placeholder="candidate@university.edu" 
+                           <input
+                             type="email"
+                             required
+                             placeholder="candidate@university.edu"
                              className="input-academic flex-1"
                              value={newEmail} onChange={e => setNewEmail(e.target.value)}
                            />
                            <button type="submit" className="btn-primary whitespace-nowrap">Issue Secure Key</button>
                        </form>
+                       {lastCredentials && (
+                         <div className="mt-4 p-4 bg-tertiary-container/20 border border-tertiary-container rounded-lg">
+                           <p className="text-sm font-semibold text-tertiary mb-2">Credentials Generated — share with candidate:</p>
+                           <p className="font-mono text-sm">Email: <strong>{lastCredentials.email}</strong></p>
+                           <p className="font-mono text-sm">Password: <strong>{lastCredentials.password}</strong></p>
+                         </div>
+                       )}
                    </div>
 
                    <div>

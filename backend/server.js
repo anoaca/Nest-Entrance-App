@@ -128,7 +128,7 @@ app.post('/api/students/invite', authenticateToken, isAdmin, async (req, res) =>
 
         console.log("Mock Email sent! Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
-        res.status(201).json({ student, previewUrl: nodemailer.getTestMessageUrl(info) });
+        res.status(201).json({ student, rawPassword, previewUrl: nodemailer.getTestMessageUrl(info) });
     } catch (e) {
         res.status(400).json({ message: e.message });
     }
