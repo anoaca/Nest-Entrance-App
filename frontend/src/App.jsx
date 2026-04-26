@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import StudentLogin from './pages/StudentLogin';
 import AdminLogin from './pages/AdminLogin';
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
 function AppConfig() {
   return (
-    <HashRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Student Routes */}
         <Route path="/" element={<StudentLogin />} />
@@ -28,7 +28,7 @@ function AppConfig() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/*" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
