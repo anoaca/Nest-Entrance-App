@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0056d2;
+  --color-primary-dim: #004bb9;
+  --color-primary-container: #dae2ff;
+  --color-on-primary: #f8f7ff;
+  
+  --color-secondary: #526074;
+  --color-secondary-container: #d5e3fc;
+  
+  --color-tertiary: #006d4a;
+  --color-tertiary-container: #69f6b8;
+  --color-on-tertiary-container: #005a3c;
+  
+  --color-surface: #f7f9fb;
+  --color-surface-container: #e8eff3;
+  --color-surface-container-low: #f0f4f7;
+  --color-surface-container-high: #e1e9ee;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface: #2a3439;
+  --color-on-surface-variant: #566166;
+  --color-surface-variant: #d9e4ea;
+  
+  --color-outline-variant: rgba(169, 180, 185, 0.15); /* outline_variant at 15% opacity */
+  
+  --color-error: #9f403d;
+  --color-error-container: #fe8983;
+
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-body bg-surface text-on-surface antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer utilities {
+  .card-glass {
+    @apply bg-surface-container-lowest/80 backdrop-blur-[20px] shadow-sm;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-on-primary rounded-md px-4 py-2 font-medium hover:bg-primary-dim transition-colors shadow-sm;
+    background-image: linear-gradient(135deg, var(--color-primary), var(--color-primary-dim));
+  }
+  
+  .btn-secondary {
+    @apply bg-surface-container text-on-surface rounded-md px-4 py-2 font-medium hover:bg-surface-variant transition-colors;
+  }
+
+  .status-enabled {
+    @apply bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded-md text-sm font-medium;
+  }
+
+  .status-disabled {
+    @apply bg-surface-variant text-on-surface-variant px-2 py-1 rounded-md text-sm font-medium;
+  }
+
+  .input-academic {
+    @apply bg-surface-container-low text-on-surface w-full px-4 py-2 rounded focus:outline-none focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary transition-all;
+  }
+
+  .admin-panel-shadow {
+    box-shadow: 0 0 32px 0 rgba(42, 52, 57, 0.06); 
+  }
+}

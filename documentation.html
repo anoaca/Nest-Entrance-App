@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST Entrance App — Documentation</title>
+  <style>
+    :root {
+      --primary: #0056d2;
+      --primary-light: #e8f0fe;
+      --success: #006d4a;
+      --success-light: #e6f4ef;
+      --error: #9f403d;
+      --error-light: #fdecea;
+      --surface: #f8f9fa;
+      --border: #e0e0e0;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #003fa3 100%);
+      color: var(--white);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+    }
+    header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      margin-bottom: 1rem;
+    }
+    header h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+    header p  { font-size: 1.1rem; opacity: 0.88; max-width: 600px; margin: 0 auto; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+    nav a {
+      display: inline-block;
+      padding: 1rem 1.2rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section { margin-bottom: 3.5rem; }
+    section:target { scroll-margin-top: 56px; }
+
+    h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.6rem; }
+    p  { margin-bottom: 0.9rem; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── GRID ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    @media (max-width: 680px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.8rem; }
+    }
+
+    /* ── STAT PILLS ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; }
+    .stat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat .val { font-size: 1.9rem; font-weight: 800; color: var(--primary); }
+    .stat .lbl { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── BADGES ── */
+    .tag {
+      display: inline-block;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      margin: 2px 2px 2px 0;
+    }
+    .tag-blue   { background: var(--primary-light); color: var(--primary); }
+    .tag-green  { background: var(--success-light); color: var(--success); }
+    .tag-red    { background: var(--error-light);   color: var(--error); }
+    .tag-gray   { background: #f0f0f0; color: #555; }
+    .tag-yellow { background: #fff8e1; color: #7a5c00; }
+
+    /* ── ROLE BLOCKS ── */
+    .role-block {
+      border-left: 4px solid;
+      padding: 1rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1rem;
+    }
+    .role-admin   { border-color: var(--primary); background: var(--primary-light); }
+    .role-student { border-color: var(--success); background: var(--success-light); }
+
+    /* ── CODE / ENDPOINT ── */
+    .endpoint {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: #f5f7ff;
+      border: 1px solid #dce4ff;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .method {
+      font-family: monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      flex-shrink: 0;
+      min-width: 52px;
+      text-align: center;
+    }
+    .method-get    { background: #e6f4ef; color: var(--success); }
+    .method-post   { background: var(--primary-light); color: var(--primary); }
+    .method-put    { background: #fff3e0; color: #b45309; }
+    .method-delete { background: var(--error-light); color: var(--error); }
+    .endpoint code { font-family: monospace; font-size: 0.9rem; color: #1a1a2e; word-break: break-all; }
+    .endpoint .desc { font-size: 0.85rem; color: var(--muted); display: block; margin-top: 2px; }
+
+    /* ── STEPS ── */
+    .steps { counter-reset: step; }
+    .step {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .step::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+    }
+    .step-body { padding-top: 4px; }
+    .step-body strong { display: block; margin-bottom: 3px; }
+
+    /* ── CODE BLOCK ── */
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      font-size: 0.87rem;
+      overflow-x: auto;
+      margin: 0.8rem 0;
+      line-height: 1.7;
+    }
+    code { font-family: 'Fira Code', 'Courier New', monospace; }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: var(--primary-light);
+      color: var(--primary);
+      text-align: left;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+    }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+
+    /* ── ALERT ── */
+    .alert {
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+    .alert-info  { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .alert-warn  { background: #fff8e1; border-left: 4px solid #f59e0b; }
+    .alert-error { background: var(--error-light); border-left: 4px solid var(--error); }
+
+    /* ── ICON ── */
+    .icon { font-size: 1.3em; line-height: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 1rem 0;
+    }
+    .flow-node {
+      background: var(--white);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .flow-arrow {
+      color: var(--primary);
+      font-size: 1.2rem;
+      padding: 0 0.4rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <div class="badge">Technical Documentation</div>
+  <h1>NEST Entrance App</h1>
+  <p>A secure, full-stack online entrance examination platform with real-time timer, role-based access, and an admin control panel.</p>
+</header>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#roles">Roles</a>
+  <a href="#features">Features</a>
+  <a href="#api">API Reference</a>
+  <a href="#database">Database</a>
+  <a href="#workflow">Workflow</a>
+  <a href="#setup">Setup & Run</a>
+  <a href="#security">Security</a>
+  <a href="#stack">Tech Stack</a>
+</nav>
+
+<main>
+
+  <!-- ══════════════ OVERVIEW ══════════════ -->
+  <section id="overview">
+    <h2><span class="icon">📋</span> Overview</h2>
+    <p>
+      <strong>NEST Entrance App</strong> (internally called <em>The Scholarly Monolith</em>) is a browser-based entrance examination system.
+      Administrators build a question bank, invite candidates by email, and control exam availability via a master toggle.
+      Candidates log in with auto-generated credentials, take a strictly-timed multiple-choice exam, and submit answers — all within a secured, role-restricted session.
+    </p>
+
+    <div class="stat-grid" style="margin-top:1.5rem">
+      <div class="stat"><div class="val">2</div><div class="lbl">User Roles</div></div>
+      <div class="stat"><div class="val">60 min</div><div class="lbl">Default Exam Duration</div></div>
+      <div class="stat"><div class="val">4</div><div class="lbl">Options per Question</div></div>
+      <div class="stat"><div class="val">10</div><div class="lbl">REST API Endpoints</div></div>
+      <div class="stat"><div class="val">3</div><div class="lbl">Database Models</div></div>
+      <div class="stat"><div class="val">JWT</div><div class="lbl">Auth Mechanism</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════════ ROLES ══════════════ -->
+  <section id="roles">
+    <h2><span class="icon">👤</span> User Roles</h2>
+
+    <div class="role-block role-admin">
+      <div class="card-title" style="color:var(--primary)">🛡️ Administrator</div>
+      <p style="margin:0">
+        Accesses the system at <strong>/admin/login</strong>. Full control over questions, candidate management, exam settings, and system status.
+        Default credentials: <code>admin</code> / <code>adminpassword</code> (set on first database initialisation).
+      </p>
+    </div>
+
+    <div class="role-block role-student">
+      <div class="card-title" style="color:var(--success)">🎓 Student / Candidate</div>
+      <p style="margin:0">
+        Accesses the system at <strong>/</strong> (root login). Uses email as username and the auto-generated password sent by the admin.
+        Can only enter the exam when the admin has enabled it. Answer submission is final.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════ FEATURES ══════════════ -->
+  <section id="features">
+    <h2><span class="icon">✨</span> Features</h2>
+
+    <!-- Auth -->
+    <h3>Authentication & Session Management</h3>
+    <div class="card">
+      <ul style="padding-left:1.4rem">
+        <li>Separate login portals for students and admins</li>
+        <li>Passwords hashed with <strong>bcryptjs</strong> (10 salt rounds)</li>
+        <li>Sessions managed via <strong>JWT tokens</strong> with 12-hour expiry</li>
+        <li>Protected routes: unauthenticated users redirected to login</li>
+        <li>Role verification on every protected API request</li>
+      </ul>
+    </div>
+
+    <!-- Exam Interface -->
+    <h3>Student Exam Interface</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⏱ Countdown Timer</div>
+        <p style="margin:0;font-size:.92rem">Live mm:ss countdown. Turns red and pulses when fewer than 5 minutes remain. Automatically submits the exam when time reaches zero.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Progress Tracking</div>
+        <p style="margin:0;font-size:.92rem">Animated progress bar showing the ratio of answered to total questions. Instantly updates on every selection.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🗺 Question Navigation</div>
+        <p style="margin:0;font-size:.92rem">Previous / Next buttons for sequential navigation. Current question number and total count always visible.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">✅ Answer Selection</div>
+        <p style="margin:0;font-size:.92rem">Four radio-button options per question. Previously selected answers are remembered when the student navigates back.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">📤 Submission Screen</div>
+        <p style="margin:0;font-size:.92rem">Confirmation overlay after submission. "Concluded Session" button ends the session cleanly.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🔒 Exam Gate</div>
+        <p style="margin:0;font-size:.92rem">If admin has disabled the exam, students are shown an "Exam not available" message and cannot proceed.</p>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <h3>Admin Dashboard</h3>
+    <p>The admin panel is organised into four tabs:</p>
+
+    <div class="card">
+      <div class="card-title"><span class="tag tag-blue">Tab 1</span> Dashboard Overview</div>
+      <ul style="padding-left:1.4rem;font-size:.92rem">
+        <li>Total candidate count</li>
+        <li>Total question count</li>
+        <li>System integrity percentage</li>
+        <li>Exam analytics bar chart</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="tag tag-blue">Tab 2</span> Candidate Access Management</div>
+      <ul style="padding-left:1.4rem;font-size:.92rem">
+        <li>Invite a candidate by entering their email address</li>
+        <li>System auto-generates a secure random password</li>
+        <li>Credentials dispatched via Nodemailer (Ethereal test transport)</li>
+        <li>Invited candidates list with status badges</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="tag tag-blue">Tab 3</span> Question Bank ("The Question Monolith")</div>
+      <ul style="padding-left:1.4rem;font-size:.92rem">
+        <li>Create multiple-choice questions: question text + 4 option texts + mark correct answer</li>
+        <li>View full question list with correct answer highlighted in green</li>
+        <li>Delete individual questions</li>
+        <li>Questions numbered sequentially</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="tag tag-blue">Tab 4</span> Exam Global Rules</div>
+      <ul style="padding-left:1.4rem;font-size:.92rem">
+        <li>Master enable / disable toggle for the exam</li>
+        <li>Setting persists to the database — survives server restarts</li>
+        <li>When disabled: students receive a 403 response and a friendly UI message</li>
+      </ul>
+    </div>
+
+    <!-- Email -->
+    <h3>Email Notifications</h3>
+    <div class="alert alert-info">
+      <span>ℹ️</span>
+      <div>The email system uses <strong>Ethereal</strong> (a fake SMTP service). Emails are not actually delivered to inboxes — instead a preview URL is logged to the server console. Replace with a real SMTP provider for production use.</div>
+    </div>
+  </section>
+
+  <!-- ══════════════ API ══════════════ -->
+  <section id="api">
+    <h2><span class="icon">🔌</span> API Reference</h2>
+    <p>All endpoints are prefixed with <code>/api</code>. Protected routes require the header <code>Authorization: Bearer &lt;jwt_token&gt;</code>.</p>
+
+    <h3>Public Endpoints</h3>
+    <div class="endpoint">
+      <span class="method method-post">POST</span>
+      <div>
+        <code>/api/auth/login</code>
+        <span class="desc">Authenticate a user. Body: <code>{ username, password }</code>. Returns <code>{ token, role }</code>.</span>
+      </div>
+    </div>
+
+    <h3>Admin-Only Endpoints <span class="tag tag-blue">auth + admin role required</span></h3>
+    <div class="endpoint">
+      <span class="method method-get">GET</span>
+      <div><code>/api/questions</code><span class="desc">Retrieve all questions (includes correct answers).</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-post">POST</span>
+      <div><code>/api/questions</code><span class="desc">Create a question. Body: <code>{ text, options: string[4], correct_answer }</code>.</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-delete">DELETE</span>
+      <div><code>/api/questions/:id</code><span class="desc">Delete a question by ID.</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-get">GET</span>
+      <div><code>/api/exam-settings</code><span class="desc">Get current exam settings (enabled flag, duration, window times).</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-put">PUT</span>
+      <div><code>/api/exam-settings</code><span class="desc">Update exam settings. Body: <code>{ is_enabled, duration_minutes, start_time, end_time }</code>.</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-get">GET</span>
+      <div><code>/api/students</code><span class="desc">List all student accounts.</span></div>
+    </div>
+    <div class="endpoint">
+      <span class="method method-post">POST</span>
+      <div><code>/api/students/invite</code><span class="desc">Invite a student. Body: <code>{ email }</code>. Creates account, sends mock email with credentials.</span></div>
+    </div>
+
+    <h3>Student-Only Endpoints <span class="tag tag-green">auth + student role required</span></h3>
+    <div class="endpoint">
+      <span class="method method-get">GET</span>
+      <div><code>/api/exam</code><span class="desc">Returns exam questions (correct answers stripped) and settings. Returns 403 if exam is disabled.</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DATABASE ══════════════ -->
+  <section id="database">
+    <h2><span class="icon">🗄️</span> Database Models</h2>
+    <p>SQLite database managed by <strong>Sequelize ORM</strong>. File located at <code>backend/database.sqlite</code>. Schema is auto-synced on startup (<code>sync({ force: true })</code> — data is reset each restart in development).</p>
+
+    <h3>User</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>INTEGER</td><td>Auto-increment primary key</td></tr>
+        <tr><td>username</td><td>STRING</td><td>Email address for students; <code>admin</code> for admin</td></tr>
+        <tr><td>password_hash</td><td>STRING</td><td>bcrypt hash</td></tr>
+        <tr><td>role</td><td>ENUM</td><td><code>admin</code> | <code>student</code></td></tr>
+        <tr><td>active</td><td>BOOLEAN</td><td>Defaults to <code>true</code></td></tr>
+      </table>
+    </div>
+
+    <h3>Question</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>INTEGER</td><td>Auto-increment primary key</td></tr>
+        <tr><td>text</td><td>TEXT</td><td>Question body</td></tr>
+        <tr><td>options</td><td>JSON</td><td>Array of 4 answer strings</td></tr>
+        <tr><td>correct_answer</td><td>INTEGER</td><td>0-based index into options array</td></tr>
+      </table>
+    </div>
+
+    <h3>ExamSettings</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>INTEGER</td><td>Singleton row (always id = 1)</td></tr>
+        <tr><td>is_enabled</td><td>BOOLEAN</td><td>Master exam toggle; default <code>false</code></td></tr>
+        <tr><td>duration_minutes</td><td>INTEGER</td><td>Exam timer length; default <code>60</code></td></tr>
+        <tr><td>start_time</td><td>DATE</td><td>Optional scheduled window start</td></tr>
+        <tr><td>end_time</td><td>DATE</td><td>Optional scheduled window end</td></tr>
+      </table>
+    </div>
+
+    <div class="alert alert-warn" style="margin-top:1rem">
+      <span>⚠️</span>
+      <div><strong>Development note:</strong> <code>sequelize.sync({ force: true })</code> drops and recreates all tables on every server restart. Change to <code>sync()</code> or use migrations before deploying to production.</div>
+    </div>
+  </section>
+
+  <!-- ══════════════ WORKFLOW ══════════════ -->
+  <section id="workflow">
+    <h2><span class="icon">🔄</span> User Workflow</h2>
+
+    <h3>Admin Setup Flow</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-body"><strong>Log in as Admin</strong>Navigate to <code>/admin/login</code> and sign in with <code>admin</code> / <code>adminpassword</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Build Question Bank</strong>Open the "Question Bank" tab. Add questions: provide text, four options, and mark the correct one.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Invite Candidates</strong>Open "Candidate Access" tab. Enter each candidate's email. System creates an account and sends (mock) credentials.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Enable the Exam</strong>Open "Exam Rules" tab. Flip the master toggle to <em>Enabled</em>. Students can now access the exam.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Monitor</strong>Dashboard tab shows live candidate and question counts.</div>
+      </div>
+    </div>
+
+    <h3>Candidate Exam Flow</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-body"><strong>Receive Credentials</strong>Candidate receives email (or is told verbally in dev mode) their username (email) and auto-generated password.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Log In</strong>Navigate to root <code>/</code>. Enter credentials on the student login page.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Take Exam</strong>Timer starts immediately. Navigate questions with Prev / Next. Select one answer per question.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Submit</strong>Click "Submit" when finished — or wait for auto-submit when the timer expires.</div>
+      </div>
+      <div class="step">
+        <div class="step-body"><strong>Conclude</strong>Confirmation screen appears. Click "Concluded Session" to end.</div>
+      </div>
+    </div>
+
+    <h3>Data Flow Diagram</h3>
+    <div class="flow">
+      <div class="flow-node">Browser</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">React (Vite :5173)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Axios HTTP</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Express API (:3001)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Sequelize ORM</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">SQLite DB</div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SETUP ══════════════ -->
+  <section id="setup">
+    <h2><span class="icon">🚀</span> Setup &amp; Running</h2>
+
+    <h3>Prerequisites</h3>
+    <ul style="padding-left:1.4rem;margin-bottom:1rem">
+      <li>Node.js ≥ 18</li>
+      <li>npm ≥ 9</li>
+    </ul>
+
+    <h3>1 — Start the Backend</h3>
+    <pre><code>cd "NEST entrance app/backend"
+npm install          # first time only
+node server.js       # starts on http://localhost:3001</code></pre>
+    <div class="alert alert-info"><span>ℹ️</span><div>On first run the SQLite database is created, tables are seeded, and a default <code>admin</code> account is added automatically.</div></div>
+
+    <h3>2 — Start the Frontend</h3>
+    <pre><code>cd "NEST entrance app/frontend"
+npm install          # first time only
+npm run dev          # starts on http://localhost:5173</code></pre>
+
+    <h3>Environment Variables (Backend)</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+        <tr><td>PORT</td><td>3001</td><td>HTTP server port</td></tr>
+        <tr><td>JWT_SECRET</td><td><em>hardcoded</em></td><td>Change before production deployment</td></tr>
+      </table>
+    </div>
+
+    <h3>Login URLs</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🎓 Student Login</div>
+        <code>http://localhost:5173/</code>
+        <p style="margin-top:.5rem;font-size:.88rem;color:var(--muted)">Username: candidate email<br>Password: generated by admin</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🛡️ Admin Login</div>
+        <code>http://localhost:5173/admin/login</code>
+        <p style="margin-top:.5rem;font-size:.88rem;color:var(--muted)">Username: <code>admin</code><br>Password: <code>adminpassword</code></p>
+      </div>
+    </div>
+
+    <h3>Available npm Scripts (Frontend)</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <tr><th>Script</th><th>Command</th><th>Description</th></tr>
+        <tr><td><code>npm run dev</code></td><td><code>vite</code></td><td>Development server with HMR</td></tr>
+        <tr><td><code>npm run build</code></td><td><code>vite build</code></td><td>Production bundle in <code>dist/</code></td></tr>
+        <tr><td><code>npm run preview</code></td><td><code>vite preview</code></td><td>Serve production build locally</td></tr>
+        <tr><td><code>npm run lint</code></td><td><code>eslint .</code></td><td>Code quality check</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════ SECURITY ══════════════ -->
+  <section id="security">
+    <h2><span class="icon">🔐</span> Security</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Password Hashing</div>
+        <p style="font-size:.92rem;margin:0">All passwords stored as bcrypt hashes (10 salt rounds). Plain-text passwords are never persisted.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">JWT Authentication</div>
+        <p style="font-size:.92rem;margin:0">Stateless token-based sessions. Tokens expire after 12 hours. Secret key validated on every protected request.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Role-Based Access Control</div>
+        <p style="font-size:.92rem;margin:0">Admin and student routes are independently guarded. A student token cannot access admin endpoints.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Answer Hiding</div>
+        <p style="font-size:.92rem;margin:0">The student <code>GET /api/exam</code> endpoint strips <code>correct_answer</code> fields before returning questions.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Exam Gate</div>
+        <p style="font-size:.92rem;margin:0">Server-side enforcement: exam access returns HTTP 403 when <code>is_enabled = false</code>, regardless of client state.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">CORS</div>
+        <p style="font-size:.92rem;margin:0">Express CORS middleware restricts which origins can call the API. Configure allowed origins for production.</p>
+      </div>
+    </div>
+
+    <div class="alert alert-error" style="margin-top:1.2rem">
+      <span>🚨</span>
+      <div><strong>Before deploying to production:</strong> change the hardcoded JWT secret in <code>server.js</code>, change the default admin password, switch <code>sync({ force: true })</code> to migrations, and configure a real SMTP provider.</div>
+    </div>
+  </section>
+
+  <!-- ══════════════ STACK ══════════════ -->
+  <section id="stack">
+    <h2><span class="icon">🛠️</span> Technology Stack</h2>
+
+    <h3>Frontend</h3>
+    <div class="grid-3">
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">⚛️</div>
+        <strong>React 19</strong>
+        <div class="tag tag-blue" style="margin-top:4px">UI Framework</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">⚡</div>
+        <strong>Vite 8</strong>
+        <div class="tag tag-blue" style="margin-top:4px">Build Tool</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🎨</div>
+        <strong>Tailwind CSS 4</strong>
+        <div class="tag tag-blue" style="margin-top:4px">Styling</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🗺</div>
+        <strong>React Router 7</strong>
+        <div class="tag tag-blue" style="margin-top:4px">Routing</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">📡</div>
+        <strong>Axios 1.14</strong>
+        <div class="tag tag-blue" style="margin-top:4px">HTTP Client</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🖼</div>
+        <strong>Lucide React</strong>
+        <div class="tag tag-blue" style="margin-top:4px">Icons</div>
+      </div>
+    </div>
+
+    <h3>Backend</h3>
+    <div class="grid-3">
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🟩</div>
+        <strong>Express 5</strong>
+        <div class="tag tag-green" style="margin-top:4px">Web Framework</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🗃</div>
+        <strong>Sequelize 6</strong>
+        <div class="tag tag-green" style="margin-top:4px">ORM</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">💾</div>
+        <strong>SQLite 3</strong>
+        <div class="tag tag-green" style="margin-top:4px">Database</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🔑</div>
+        <strong>jsonwebtoken 9</strong>
+        <div class="tag tag-green" style="margin-top:4px">Auth</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">🔒</div>
+        <strong>bcryptjs 3</strong>
+        <div class="tag tag-green" style="margin-top:4px">Hashing</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem">📧</div>
+        <strong>Nodemailer 8</strong>
+        <div class="tag tag-green" style="margin-top:4px">Email</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>NEST Entrance App &mdash; Documentation &mdash; Generated 2026</p>
+</footer>
+
+</body>
+</html>
